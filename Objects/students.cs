@@ -64,7 +64,107 @@ namespace Register
       conn.Close();
     }
   }
-  
+  public void AddCourses(Course newCourse)
+  {
+    SqlConnection conn = DB.Connection();
+    conn.Open();
+
+    SqlCommand cmd = new SqlCommand("INSERT INTO students_courses (student_id, course_id) VALUES (@StudentId,@CourseId)",conn);
+
+    SqlParameter studentIdParameter = new SqlParameter();
+    studentIdParameter.ParameterName= "@StudentId";
+    studentIdParameter.Value= this.GetId();
+
+    SqlParameter courseIdParameter = new SqlParameter();
+    courseIdParameter.ParameterName= "@CourseId";
+    courseIdParameter.Value= newCourse.GetId();
+
+    cmd.Parameters.Add(studentIdParameter);
+    cmd.Parameters.Add(courseIdParameter);
+
+    cmd.ExecuteNonQuery();
+
+    if(conn != null)
+    {
+      conn.Close();
+    }
+  }
+
+  public List<Course> GetCourses()
+  {
+    SqlConnection conn = DB.Connection();
+    conn.Open();
+
+    SqlCommand cmd = new SqlCommand("SELECT courses.* FROM students JOIN students_courses ON (students.id=students_courses.student_id) JOIN courses ON (students_courses.id=courses.id) WHERE students.id=@StudentId;",conn);
+
+    SqlParameter studentIdParameter = new SqlParameter();
+    studentIdParameter.ParameterName="@StudentId";
+    studentIdParameter.Value=this.GetId();
+
+    cmd.Parameters.Add(studentIdParameter);
+    SqlDataReader rdr = cmd.ExecuteReader();
+
+    List<Course> foundCourses= new List<Course>{};
+
+    while(rdr.Read())
+    {
+      int courseId=rdr.GetInt32(0);
+      string courseName=rdr.GetString(1);
+      int courseNumber=rdr.GetInt32(2);
+      Course foundCourse = new Course(courseName,courseNumber,courseId);
+      foundCourses.Add(foundCourse);
+    }
+
+    if(rdr != null)
+    {
+      rdr.Close();
+    }
+
+    if(conn !=null)
+    {
+      conn.Close();
+    }
+    return foundCourses;
+  }
+
+
+
+
+  public static Student Find(int id)
+  {
+    SqlConnection conn = DB.Connection();
+    conn.Open();
+
+    SqlCommand cmd = new SqlCommand("SELECT * FROM students WHERE id = @StudentID;", conn);
+    SqlParameter studentIdParameter = new SqlParameter();
+    studentIdParameter.ParameterName = "@StudentID";
+    studentIdParameter.Value = id.ToString();
+    cmd.Parameters.Add(studentIdParameter);
+    SqlDataReader rdr = cmd.ExecuteReader();
+
+    int foundStudentId = 0;
+    string foundNameStudent = null;
+    DateTime foundDateStudent = new DateTime(2000,01,01);
+
+    while (rdr.Read())
+    {
+      foundStudentId = rdr.GetInt32(0);
+      foundNameStudent = rdr.GetString(1);
+      foundDateStudent = rdr.GetDateTime(2);
+    }
+    Student foundStudent = new Student(foundNameStudent, foundDateStudent, foundStudentId);
+
+    if (rdr != null)
+    {
+      rdr.Close();
+    }
+    if (conn != null)
+    {
+      conn.Close();
+    }
+    return foundStudent;
+  }
+
   public int GetId()
   {
     return _id;
