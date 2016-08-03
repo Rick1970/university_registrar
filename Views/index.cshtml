@@ -1,0 +1,48 @@
+<form class="" action="/add/new/student" method="post">
+  <label for="new-name">New Name</label>
+  <input type="text" name="new-name" id="new-name" value="">
+
+  <label for="new-date">Enrollment Date</label>
+  <input type="date" name="new-date" id="new-date" value="">
+
+  <button type="submit" name="button">Add New Student Now</button>
+</form>
+
+
+
+<form class="" action="/add/new/course" method="post">
+
+  <label for="course-name">New Name</label>
+  <input type="text" name="course-name" id="course-name" value="">
+
+  <label for="course-number">New Number</label>
+  <input type="text" name="course-number" id="course-number" value="">
+
+
+  <button type="submit" name="button">Add New Course Now</button>
+</form>
+@if(Model["student"].Count==0)
+{
+  <h1>There is no students in our system now.</h1>
+}else{
+
+  <ul>
+    @foreach( var st in Model["student"])
+    {
+      <li>  @st.GetName()</li>
+    }
+  </ul>
+}
+@if(Model["course"].Count == 0)
+{
+  <h1>There are no courses currently listed</h1>
+
+}else{
+
+  <ul>
+    @foreach(var cour in Model["course"])
+{
+  <li>@cour.GetName() </li>
+}
+  </ul>
+}

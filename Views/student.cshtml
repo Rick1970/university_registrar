@@ -1,0 +1,26 @@
+
+@if(Model["student"].Count==0)
+{
+  <h1>There is no students in our system now.</h1>
+}else{
+
+  <ul>
+    @foreach( var st in Model["student"])
+    {
+      <li>  @st.GetName()</li>
+    }
+  </ul>
+}
+@if(Model["course"].Count == 0)
+{
+  <h1>There are no courses currently listed</h1>
+
+}else{
+
+  <ul>
+    @foreach(var cour in Model["course"])
+{
+  <li>@cour.GetName() </li>
+}
+  </ul>
+}
